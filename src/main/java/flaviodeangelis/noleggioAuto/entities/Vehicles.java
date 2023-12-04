@@ -1,5 +1,6 @@
 package flaviodeangelis.noleggioAuto.entities;
 
+import flaviodeangelis.noleggioAuto.Enum.VehicleAvailability;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -25,6 +26,8 @@ public class Vehicles {
     private double passo;
     private int massa;
     private String ConsumiMisto;
+    @Enumerated(EnumType.STRING)
+    private VehicleAvailability vehicleAvailability;
     @OneToOne
     @JoinColumn(name = "reservation_id", referencedColumnName = "id")
     private Reservations reservations;
