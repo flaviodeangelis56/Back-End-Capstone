@@ -1,11 +1,13 @@
 package flaviodeangelis.noleggioAuto.services;
 
-import flaviodeangelis.noleggioAuto.Enum.VehicleAvailability;
 import flaviodeangelis.noleggioAuto.entities.Reservations;
+import flaviodeangelis.noleggioAuto.entities.User;
 import flaviodeangelis.noleggioAuto.entities.Vehicles;
 import flaviodeangelis.noleggioAuto.exceptions.NotFoundException;
-import flaviodeangelis.noleggioAuto.payloads.NewVehicleDTO;
+import flaviodeangelis.noleggioAuto.payloads.NewReservationsDTO;
 import flaviodeangelis.noleggioAuto.repositories.ReservationRepository;
+import flaviodeangelis.noleggioAuto.repositories.UserRepository;
+import flaviodeangelis.noleggioAuto.repositories.VehicleRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -19,6 +21,10 @@ import java.io.IOException;
 public class ReservationService {
     @Autowired
     private ReservationRepository reservationRepository;
+    @Autowired
+    private UserRepository userRepository;
+    @Autowired
+    private VehicleRepository vehicleRepository;
 
     public Page<Reservations> findAll(int page, int size, String sortBy) {
         if (size < 0)
@@ -38,21 +44,14 @@ public class ReservationService {
         reservationRepository.delete(found);
     }
 
-    public Vehicles saveVehicles(NewVehicleDTO body) throws IOException {
-
-        Vehicles newVehicle = new Vehicles();
-        newVehicle.setImgVehicles("...");
-        newVehicle.setName(body.nome());
-        newVehicle.setAltezza(body.altezza());
-        newVehicle.setCilindrata(body.cilindrata());
-        newVehicle.setPasso(body.passo());
-        newVehicle.setMassa(body.massa());
-        newVehicle.setLarghezza(body.larghezza());
-        newVehicle.setLunghezza(body.lunghezza());
-        newVehicle.setConsumiMisto(body.ConsumiMisto());
-        newVehicle.setAnnoProduzione(body.annoProduzione());
-        newVehicle.setMaxPower(body.maxPower());
-        newVehicle.setVehicleAvailability(VehicleAvailability.DISPONIBILE);
-        return vehicleRepository.save(newVehicle);
+    public Reservations saveReservation(NewReservationsDTO body, int userId, int vehicleId) throws IOException {
+        User userFound = userRepository.findById(userId).orElseThrow(() -> new NotFoundException(userId));
+        Vehicles vehicleFound = vehicleRepository.findById(vehicleId).orElseThrow(() -> new NotFoundException(vehicleId));
+        Reservations newReserv = new Reservations();
+        newReserv.setDataInizioPrestito(body.dataInizioPrestito());
+        newReserv.setDataRestituzionePrevista(body.dataInizioPrestito().plusMonths(1));
+        newReserv.setVehicles(vehicleFound);
+        newReserv.setUser(userFound);
+        return reservationRepository.save(newReserv);
     }
 }
