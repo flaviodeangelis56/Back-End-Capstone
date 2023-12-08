@@ -16,6 +16,7 @@ public class Vehicles {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
     private String name;
+    private String marca;
     private String imgVehicles;
     private int annoProduzione;
     private int cilindrata;

@@ -11,6 +11,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 
@@ -54,4 +55,12 @@ public class VehicleController {
     public void findByIdAndDelete(@PathVariable int id) {
         vehicleService.findByIdAndDelate(id);
     }
+
+    @PutMapping("/update/img/{id}")
+    @PreAuthorize("hasAuthority('ADMIN')")
+    public Vehicles uploadImg(@RequestParam("avatar") MultipartFile file, @PathVariable int id) throws IOException {
+        Vehicles found = vehicleService.findById(id);
+        return vehicleService.uploadImg(file, id, found);
+    }
 }
+

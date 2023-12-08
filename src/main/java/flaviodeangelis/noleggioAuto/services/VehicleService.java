@@ -1,5 +1,7 @@
 package flaviodeangelis.noleggioAuto.services;
 
+import com.cloudinary.Cloudinary;
+import com.cloudinary.utils.ObjectUtils;
 import flaviodeangelis.noleggioAuto.Enum.VehicleAvailability;
 import flaviodeangelis.noleggioAuto.entities.Vehicles;
 import flaviodeangelis.noleggioAuto.exceptions.NotFoundException;
@@ -11,6 +13,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 
@@ -18,6 +21,8 @@ import java.io.IOException;
 public class VehicleService {
     @Autowired
     private VehicleRepository vehicleRepository;
+    @Autowired
+    private Cloudinary cloudinary;
 
     public Page<Vehicles> findAll(int page, int size, String sortBy) {
         if (size < 0)
@@ -38,10 +43,10 @@ public class VehicleService {
     }
 
     public Vehicles saveVehicles(NewVehicleDTO body) throws IOException {
-
         Vehicles newVehicle = new Vehicles();
-        newVehicle.setImgVehicles("...");
+        newVehicle.setImgVehicles(body.imgUrl());
         newVehicle.setName(body.nome());
+        newVehicle.setMarca(body.marca());
         newVehicle.setAltezza(body.altezza());
         newVehicle.setCilindrata(body.cilindrata());
         newVehicle.setPasso(body.passo());
@@ -53,5 +58,24 @@ public class VehicleService {
         newVehicle.setMaxPower(body.maxPower());
         newVehicle.setVehicleAvailability(VehicleAvailability.DISPONIBILE);
         return vehicleRepository.save(newVehicle);
+    }
+
+    public Vehicles uploadImg(MultipartFile file, int id, Vehicles body) throws IOException {
+        Vehicles found = vehicleRepository.findById(id).orElseThrow(() -> new NotFoundException(id));
+        String imgUrl = (String) cloudinary.uploader().upload(file.getBytes(), ObjectUtils.emptyMap()).get("url");
+        found.setImgVehicles(imgUrl);
+        found.setName(body.getName());
+        found.setMarca(body.getMarca());
+        found.setAltezza(body.getAltezza());
+        found.setCilindrata(body.getCilindrata());
+        found.setPasso(body.getPasso());
+        found.setMassa(body.getMassa());
+        found.setLarghezza(body.getLarghezza());
+        found.setLunghezza(body.getLunghezza());
+        found.setConsumiMisto(body.getConsumiMisto());
+        found.setAnnoProduzione(body.getAnnoProduzione());
+        found.setMaxPower(body.getMaxPower());
+        found.setVehicleAvailability(VehicleAvailability.DISPONIBILE);
+        return vehicleRepository.save(found);
     }
 }
