@@ -16,6 +16,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.util.List;
 
 @Service
 public class VehicleService {
@@ -35,6 +36,10 @@ public class VehicleService {
 
     public Vehicles findById(int id) throws NotFoundException {
         return vehicleRepository.findById(id).orElseThrow(() -> new NotFoundException(id));
+    }
+
+    public List<Vehicles> findByMarca(String marca) {
+        return vehicleRepository.findByMarcaIgnoreCaseContaining(marca);
     }
 
     public void findByIdAndDelate(int id) throws NotFoundException {
