@@ -22,8 +22,7 @@ public class UserController {
         return userService.findAll(page, size > 20 ? 5 : size, orderBy);
     }
 
-    @GetMapping("/{id}")
-    @PreAuthorize("hasAuthority('ADMIN')")
+    @GetMapping("/byId/{id}")
     public User findById(@PathVariable int id) {
         return userService.findUtenteById(id);
     }
