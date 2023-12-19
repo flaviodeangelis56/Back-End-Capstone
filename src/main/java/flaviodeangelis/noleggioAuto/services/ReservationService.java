@@ -1,10 +1,10 @@
 package flaviodeangelis.noleggioAuto.services;
 
+import flaviodeangelis.noleggioAuto.Enum.VehicleAvailability;
 import flaviodeangelis.noleggioAuto.entities.Reservations;
 import flaviodeangelis.noleggioAuto.entities.User;
 import flaviodeangelis.noleggioAuto.entities.Vehicles;
 import flaviodeangelis.noleggioAuto.exceptions.NotFoundException;
-import flaviodeangelis.noleggioAuto.payloads.NewReservationsDTO;
 import flaviodeangelis.noleggioAuto.repositories.ReservationRepository;
 import flaviodeangelis.noleggioAuto.repositories.UserRepository;
 import flaviodeangelis.noleggioAuto.repositories.VehicleRepository;
@@ -16,6 +16,8 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
+import java.time.LocalDate;
+import java.util.List;
 
 @Service
 public class ReservationService {
@@ -44,14 +46,29 @@ public class ReservationService {
         reservationRepository.delete(found);
     }
 
-    public Reservations saveReservation(NewReservationsDTO body, int userId, int vehicleId) throws IOException {
+    public Reservations saveReservation(int userId, int vehicleId) throws IOException {
         User userFound = userRepository.findById(userId).orElseThrow(() -> new NotFoundException(userId));
         Vehicles vehicleFound = vehicleRepository.findById(vehicleId).orElseThrow(() -> new NotFoundException(vehicleId));
         Reservations newReserv = new Reservations();
-        newReserv.setDataInizioPrestito(body.dataInizioPrestito());
-        newReserv.setDataRestituzionePrevista(body.dataInizioPrestito().plusMonths(1));
+        newReserv.setDataInizioPrestito(LocalDate.now());
+        newReserv.setDataRestituzionePrevista(newReserv.getDataInizioPrestito().plusMonths(1));
         newReserv.setVehicles(vehicleFound);
         newReserv.setUser(userFound);
+        vehicleFound.setVehicleAvailability(VehicleAvailability.OCCUPATO);
+        vehicleRepository.save(vehicleFound);
         return reservationRepository.save(newReserv);
+    }
+
+    public void restituisciVeicolo(int id) {
+        Reservations found = reservationRepository.findById(id).orElseThrow(() -> new NotFoundException(id));
+        Vehicles test = found.getVehicles();
+        found.setDataRestituzione(LocalDate.now());
+        test.setVehicleAvailability(VehicleAvailability.DISPONIBILE);
+        vehicleRepository.save(test);
+        reservationRepository.save(found);
+    }
+
+    public List<Reservations> findByUser(int id) {
+        return reservationRepository.findByUserId(id);
     }
 }

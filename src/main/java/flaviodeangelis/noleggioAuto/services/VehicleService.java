@@ -61,6 +61,8 @@ public class VehicleService {
         newVehicle.setConsumiMisto(body.ConsumiMisto());
         newVehicle.setAnnoProduzione(body.annoProduzione());
         newVehicle.setMaxPower(body.maxPower());
+        newVehicle.setPrezzo(body.prezzo());
+        newVehicle.setDescrizione(body.descrizione());
         newVehicle.setVehicleAvailability(VehicleAvailability.DISPONIBILE);
         return vehicleRepository.save(newVehicle);
     }
@@ -80,6 +82,8 @@ public class VehicleService {
         found.setConsumiMisto(body.getConsumiMisto());
         found.setAnnoProduzione(body.getAnnoProduzione());
         found.setMaxPower(body.getMaxPower());
+        found.setPrezzo(body.getPrezzo());
+        found.setDescrizione(body.getDescrizione());
         found.setVehicleAvailability(VehicleAvailability.DISPONIBILE);
         return vehicleRepository.save(found);
     }

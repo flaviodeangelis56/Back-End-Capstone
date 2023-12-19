@@ -28,6 +28,10 @@ public record NewVehicleDTO(@NotEmpty(message = "The name field cannot be empty"
                             double passo,
                             @NotNull(message = "the mass field cannot be empty")
                             int massa,
+                            @NotNull(message = "the price field cannot be empty")
+                            int prezzo,
                             @NotEmpty(message = "the consumption field in the mixed cannot be empty")
-                            String ConsumiMisto) {
+                            String ConsumiMisto,
+                            @NotEmpty(message = "the consumption field in the mixed cannot be empty")
+                            String descrizione) {
 }

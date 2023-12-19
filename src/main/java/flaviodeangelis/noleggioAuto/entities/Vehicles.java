@@ -27,9 +27,8 @@ public class Vehicles {
     private double passo;
     private int massa;
     private String ConsumiMisto;
+    private int prezzo;
+    private String descrizione;
     @Enumerated(EnumType.STRING)
     private VehicleAvailability vehicleAvailability;
-    @OneToOne
-    @JoinColumn(name = "reservation_id", referencedColumnName = "id")
-    private Reservations reservations;
 }
