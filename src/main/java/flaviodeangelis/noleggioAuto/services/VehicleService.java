@@ -8,10 +8,6 @@ import flaviodeangelis.noleggioAuto.exceptions.NotFoundException;
 import flaviodeangelis.noleggioAuto.payloads.NewVehicleDTO;
 import flaviodeangelis.noleggioAuto.repositories.VehicleRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -25,13 +21,18 @@ public class VehicleService {
     @Autowired
     private Cloudinary cloudinary;
 
-    public Page<Vehicles> findAll(int page, int size, String sortBy) {
+    /*public Page<Vehicles> findAll(int page, int size, String sortBy) {
         if (size < 0)
             size = 10;
         if (size > 100)
             size = 20;
         Pageable pageable = PageRequest.of(page, size, Sort.by(sortBy));
         return vehicleRepository.findAll(pageable);
+    }*/
+    public List<Vehicles> findAll() {
+
+
+        return vehicleRepository.findAll();
     }
 
     public Vehicles findById(int id) throws NotFoundException {
